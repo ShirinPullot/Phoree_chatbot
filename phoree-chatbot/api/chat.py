@@ -92,6 +92,10 @@ class handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
+            if not self.path.startswith('/api/chat/stream'):
+                self.send_error(404, "Not Found")
+                return
+            
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             data = json.loads(post_data.decode('utf-8'))
@@ -144,6 +148,14 @@ class handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_cors_headers()
         self.end_headers() 
+
+    def do_HEAD(self):
+        """Handle HEAD requests (used for health checks)"""
+        self.send_response(200)
+        self.send_cors_headers()
+        self.send_header('Content-Type', 'text/plain')
+        self.send_header('Content-Length', '0')
+        self.end_headers()
 
 def run_server():
     port = int(environ.get('PORT', 8000))
