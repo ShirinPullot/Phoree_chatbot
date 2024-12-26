@@ -19,7 +19,7 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([{
     id: crypto.randomUUID(),
     role: 'assistant',
-    content: "👋 Welcome to Phoree Real Estate! I'm your personal property assistant for Dubai. How can I help you today?\n\n• Looking to buy a property?\n• Interested in renting?\n• Want to explore specific areas?\n• Need market insights?"
+    content: "👋 Welcome to Phoree Real Estate! I&apos;m your personal property assistant for Dubai. How can I help you today?\n\n• Looking to buy a property?\n• Interested in renting?\n• Want to explore specific areas?\n• Need market insights?"
   }]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);

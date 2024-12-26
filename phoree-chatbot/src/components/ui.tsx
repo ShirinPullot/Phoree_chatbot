@@ -53,12 +53,18 @@ export const Avatar: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ childre
   </div>
 )
 
-export const AvatarImage: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({ src, alt = "Avatar", ...props }) => (
+export const AvatarImage: React.FC<React.ImgHTMLAttributes<HTMLImageElement> & { width?: number; height?: number }> = ({ 
+  src, 
+  alt = "Avatar", 
+  width = 40,
+  height = 40,
+  ...props 
+}) => (
   <Image 
     src={src || '/default-avatar.png'}
     alt={alt}
-    width={Number(props.width) || 40}
-    height={Number(props.height) || 40}
+    width={width}
+    height={height}
     className={`rounded-full ${props.className || ''}`} 
   />
 )

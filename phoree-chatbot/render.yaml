@@ -1,10 +1,22 @@
 services:
+  # Backend API Service
   - type: web
-    name: phoree-chatbot
+    name: phoree-chatbot-api
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: python api/chat.py
     envVars:
       - key: GROQ_API_KEY
         sync: false
+    plan: free
+
+  # Frontend Service
+  - type: web
+    name: phoree-chatbot-frontend
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://phoree-chatbot-api.onrender.com
     plan: free 

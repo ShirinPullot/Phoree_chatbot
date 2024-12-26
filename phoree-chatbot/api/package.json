@@ -1,0 +1,8 @@
+{
+  "name": "phoree-chatbot-api",
+  "version": "1.0.0",
+  "main": "chat.py",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 
