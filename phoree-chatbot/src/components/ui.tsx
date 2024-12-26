@@ -65,7 +65,6 @@ export const AvatarImage: React.FC<{
   width = 40,
   height = 40,
   className = '',
-  ...props 
 }) => (
   <Image 
     src={src || '/default-avatar.png'}
