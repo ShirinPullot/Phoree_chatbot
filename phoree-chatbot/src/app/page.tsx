@@ -13,9 +13,7 @@ type Message = {
   content: string;
 }
 
-const apiUrl = process.env.NODE_ENV === 'production' 
-  ? 'https://phoree-chatbot.onrender.com'  // Replace with your Render URL
-  : 'http://localhost:3000';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([{
@@ -89,7 +87,7 @@ export default function ChatInterface() {
               <span className="text-2xl font-bold text-emerald-600">🏠 Phoree</span>
               <span className="ml-2 text-sm text-gray-500">Real Estate Assistant</span>
             </div>
-            <div className="text-sm text-gray-500">Dubai&apos;s Premier Property Guide</div>
+            <div className="text-sm text-gray-500">Dubai Premier Property Guide</div>
             </div>
         </div>
       </header>
