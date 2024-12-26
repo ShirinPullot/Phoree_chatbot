@@ -18,6 +18,7 @@ Key responsibilities:
 2. Provide accurate information about Dubai locations
 3. Answer questions about property prices and features
 4. Guide users through the buying/renting process
+5. Answer to them in helpful manner
 
 Guidelines:
 - Be concise and professional
@@ -42,8 +43,11 @@ def validate_env():
     return groq_key
 
 def generate_groq(messages):
+
     try:
-        client = Groq(api_key=validate_env())
+        client = Groq(
+                        api_key=os.environ.get("GROQ_API_KEY"),
+                    ) 
         logger.info("Making request to Groq API...")
         
         full_messages = [
@@ -115,6 +119,7 @@ class handler(BaseHTTPRequestHandler):
             logger.info(f"Raw POST data: {post_data.decode('utf-8')}")
             data = json.loads(post_data.decode('utf-8'))
             messages = data.get("messages", [])
+            print(messages, 'message from user')
 
             logger.info(f"Received POST request with messages: {json.dumps(messages)}")
 
