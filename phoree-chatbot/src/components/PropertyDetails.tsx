@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -17,6 +18,8 @@ interface PropertyDetailsProps {
 }
 
 export default function PropertyDetails({ property }: PropertyDetailsProps) {
+  const [imageError, setImageError] = useState(false);
+
   if (!property) {
     return (
       <Card>
@@ -38,13 +41,11 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
       <CardContent>
         <div className="relative w-full h-48 mb-4">
           <Image 
-            src={property.image} 
-            alt={property.title} 
+            src={imageError ? "https://via.placeholder.com/400x300?text=Property+Image" : property.image} 
+            alt={`Image of ${property.title}`} 
             fill
             className="rounded-md object-cover"
-            onError={(e: any) => {
-              e.currentTarget.src = "https://via.placeholder.com/400x300?text=Property+Image"
-            }}
+            onError={() => setImageError(true)}
           />
         </div>
         <h3 className="text-xl font-semibold mb-2">{property.title}</h3>
@@ -62,6 +63,5 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
         </ul>
       </CardContent>
     </Card>
-  )
+  );
 }
-

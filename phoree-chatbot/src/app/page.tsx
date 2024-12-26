@@ -88,7 +88,7 @@ export default function ChatInterface() {
               <span className="ml-2 text-sm text-gray-500">Real Estate Assistant</span>
             </div>
             <div className="text-sm text-gray-500">Dubai&apos;s Premier Property Guide</div>
-          </div>
+            </div>
         </div>
       </header>
 
