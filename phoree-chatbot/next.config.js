@@ -16,8 +16,8 @@ const nextConfig = {
       {
         source: '/api/chat/stream',
         destination: process.env.NODE_ENV === 'production' 
-          ? 'https://your-render-service-name.onrender.com/api/chat/stream'
-          : 'http://localhost:3000/api/chat/stream'
+          ? 'https://phoree-chatbot-api.onrender.com/api/chat/stream'
+          : 'http://localhost:10000/api/chat/stream'
       }
     ]
   }

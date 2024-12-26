@@ -8,13 +8,13 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_URL
-        value: https://phoree-chatbot-api.onrender.com
+        value: http://44.226.145.213
 
   - type: web
     name: phoree-chatbot-api
     runtime: python
-    buildCommand: cd api && pip install -r ../requirements.txt
-    startCommand: cd api && python chat.py
+    buildCommand: pip install -r requirements.txt
+    startCommand: python api/chat.py
     envVars:
       - key: GROQ_API_KEY
         sync: false
