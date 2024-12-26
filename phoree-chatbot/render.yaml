@@ -8,7 +8,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_URL
-        value: http://44.226.145.213
+        value: https://phoree-chatbot-api.onrender.com
 
   - type: web
     name: phoree-chatbot-api

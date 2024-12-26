@@ -13,9 +13,7 @@ type Message = {
   content: string;
 }
 
-const apiUrl = process.env.NODE_ENV === 'production' 
-  ? 'https://your-render-service-name.onrender.com'
-  : 'http://localhost:10000';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:10000';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([{

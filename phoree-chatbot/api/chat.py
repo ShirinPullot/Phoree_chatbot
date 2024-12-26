@@ -1,4 +1,4 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs
 import json
 import os
@@ -112,7 +112,7 @@ class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            if self.path.startswith('/api/chat/stream'):
+            if self.path.startswith('/chat/stream'):
                 query_params = parse_qs(self.path.split('?')[1])
                 message = query_params.get('message', [''])[0]
 
@@ -140,9 +140,3 @@ class handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_cors_headers()
         self.end_headers() 
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    server = HTTPServer(('', port), handler)
-    print(f"Starting server on port {port}")
-    server.serve_forever() 
