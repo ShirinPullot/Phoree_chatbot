@@ -1,10 +1,12 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/chat.py", "use": "@vercel/python" }
+    { "src": "api/chat.py", "use": "@vercel/python" },
+    { "src": "package.json", "use": "@vercel/next" }
   ],
   "routes": [
     { "src": "/api/chat/stream", "dest": "/api/chat.py" },
-    { "src": "/api/chat", "dest": "/api/chat.py" }
+    { "src": "/api/chat", "dest": "/api/chat.py" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }

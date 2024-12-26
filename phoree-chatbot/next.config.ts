@@ -1,7 +1,14 @@
-import type { NextConfig } from "next";
+const nextConfig = {
+  reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: '/api/chat/stream',
+        destination: '/api/chat'
+      }
+    ]
+  }
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+module.exports = nextConfig
 
-export default nextConfig;

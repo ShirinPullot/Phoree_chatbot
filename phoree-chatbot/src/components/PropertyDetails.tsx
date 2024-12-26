@@ -40,10 +40,9 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
           <Image 
             src={property.image} 
             alt={property.title} 
-            layout="fill"
-            objectFit="cover"
-            className="rounded-md"
-            onError={(e) => {
+            fill
+            className="rounded-md object-cover"
+            onError={(e: any) => {
               e.currentTarget.src = "https://via.placeholder.com/400x300?text=Property+Image"
             }}
           />
