@@ -41,7 +41,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
       <CardContent>
         <div className="relative w-full h-48 mb-4">
           <Image 
-            src={imageError ? "https://via.placeholder.com/400x300?text=Property+Image" : property.image} 
+            src={imageError ? "/placeholder.jpg" : property.image} 
             alt={`Image of ${property.title}`} 
             fill
             className="rounded-md object-cover"
