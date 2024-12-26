@@ -1,23 +1,23 @@
 services:
-  - type: web
-    name: phoree-chatbot-frontend
-    runtime: node
-    buildCommand: npm install && npm run build
-    startCommand: npm start
-    envVars:
-      - key: NEXT_PUBLIC_API_URL
-        fromService:
-          type: web
-          name: phoree-chatbot-api
-          property: url
+- type: web
+  name: phoree-chatbot-frontend
+  runtime: node
+  buildCommand: npm install && npm run build
+  startCommand: npm start
+  envVars:
+  - key: NEXT_PUBLIC_API_URL
+    fromService:
+      type: web
+      name: phoree-chatbot-api
+      property: url
 
-  - type: web
-    name: phoree-chatbot-api
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python api/chat.py
-    envVars:
-      - key: GROQ_API_KEY
-        sync: false
-      - key: PORT
-        value: 8000
+- type: web
+  name: phoree-chatbot-api
+  runtime: python
+  buildCommand: pip install -r requirements.txt
+  startCommand: python api/chat.py
+  envVars:
+  - key: GROQ_API_KEY
+    sync: false
+  - key: PORT
+    value: 8000

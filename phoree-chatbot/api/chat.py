@@ -44,11 +44,13 @@ def validate_env():
 def generate_groq(messages):
     try:
         client = Groq(api_key=validate_env())
+        logger.info("Making request to Groq API...")
         
-        # Add system prompt to messages
         full_messages = [
             {"role": "system", "content": SYSTEM_PROMPT}
         ] + messages
+
+        logger.info(f"Sending messages: {json.dumps(messages)}")  # Log the messages being sent
 
         completion = client.chat.completions.create(
             model="llama-3.1-70b-versatile",
@@ -59,18 +61,29 @@ def generate_groq(messages):
             stream=True
         )
 
+        # Add accumulated response for logging
+        full_response = ""
+        
         for chunk in completion:
             if chunk.choices[0].delta.content:
+                content = chunk.choices[0].delta.content
+                full_response += content  # Accumulate the response
                 data = {
-                    'content': chunk.choices[0].delta.content
+                    'content': content
                 }
+                logger.info(f"Sending chunk: {json.dumps(data)}")
                 yield f"data: {json.dumps(data)}\n\n"
 
+        # Log the complete response at the end
+        logger.info(f"Complete Groq response: {full_response}")
+        print(full_response)
+        logger.info("Stream completed successfully")
         yield "event: done\ndata: {}\n\n"
 
     except Exception as e:
         logger.error(f"Error generating Groq response: {str(e)}")
-        yield f"data: {json.dumps({'content': 'Error: Please try again.'})}\n\n"
+        error_message = {'content': f'Error: {str(e)}'}
+        yield f"data: {json.dumps(error_message)}\n\n"
         yield "event: done\ndata: {}\n\n"
 
 class handler(BaseHTTPRequestHandler):
@@ -85,7 +98,6 @@ class handler(BaseHTTPRequestHandler):
     }
 
         super().__init__(*args, **kwargs)
-
     def send_cors_headers(self):
         for header, value in self.headers_to_send.items():
             self.send_header(header, value)
@@ -101,6 +113,8 @@ class handler(BaseHTTPRequestHandler):
             data = json.loads(post_data.decode('utf-8'))
             messages = data.get("messages", [])
 
+            logger.info(f"Received POST request with messages: {json.dumps(messages)}")  # Log received messages
+
             if not messages:
                 self.send_error(400, "No messages provided")
                 return
@@ -112,6 +126,12 @@ class handler(BaseHTTPRequestHandler):
 
             for chunk in generate_groq(messages):
                 self.wfile.write(chunk.encode('utf-8'))
+                self.wfile.flush()  # Ensure chunks are sent immediately
+
+        except Exception as e:
+            logger.error(f"Error in POST handler: {str(e)}")
+            self.send_error(500, f"Internal Server Error: {str(e)}")
+            self.wfile.write(chunk.encode('utf-8'))
 
         except Exception as e:
             logger.error(f"Error in POST handler: {str(e)}")
@@ -123,6 +143,7 @@ class handler(BaseHTTPRequestHandler):
 
                 query_params = parse_qs(self.path.split('?')[1])
                 message = query_params.get('message', [''])[0]
+                print(message)
 
                 if not message:
                     self.send_error(400, "No message provided")
