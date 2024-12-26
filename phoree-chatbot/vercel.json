@@ -5,8 +5,16 @@
     { "src": "package.json", "use": "@vercel/next" }
   ],
   "routes": [
-    { "src": "/api/chat/stream", "dest": "/api/chat.py" },
-    { "src": "/api/chat", "dest": "/api/chat.py" },
+    { 
+      "src": "/api/chat/stream", 
+      "dest": "/api/chat.py",
+      "methods": ["GET", "POST", "OPTIONS"]
+    },
+    { 
+      "src": "/api/chat", 
+      "dest": "/api/chat.py",
+      "methods": ["GET", "POST", "OPTIONS"]
+    },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }

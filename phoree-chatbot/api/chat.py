@@ -92,7 +92,7 @@ class handler(BaseHTTPRequestHandler):
 
             for chunk in generate_groq(messages):
                 self.wfile.write(chunk.encode('utf-8'))
-                
+
         except Exception as e:
             logger.error(f"Error in POST handler: {str(e)}")
             self.send_error(500, "Internal Server Error")

@@ -13,6 +13,8 @@ type Message = {
   content: string;
 }
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([{
     id: crypto.randomUUID(),
@@ -36,7 +38,7 @@ export default function ChatInterface() {
     setIsLoading(true);
 
     try {
-      const eventSource = new EventSource(`/api/chat/stream?message=${encodeURIComponent(input)}`);
+      const eventSource = new EventSource(`${apiUrl}/api/chat/stream?message=${encodeURIComponent(input)}`);
       let assistantMessage = '';
 
       eventSource.onmessage = (event) => {
