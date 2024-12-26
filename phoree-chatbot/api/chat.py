@@ -115,7 +115,8 @@ class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            if self.path.startswith('/chat/stream'):
+            if self.path.startswith('/api/chat/stream'):  # <-- This needs to change to match the actual path
+
                 query_params = parse_qs(self.path.split('?')[1])
                 message = query_params.get('message', [''])[0]
 

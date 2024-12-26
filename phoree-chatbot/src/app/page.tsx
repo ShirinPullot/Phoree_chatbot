@@ -42,42 +42,63 @@ export default function ChatInterface() {
     setIsLoading(true);
 
     try {
-      const eventSource = new EventSource(`${apiUrl}/api/chat/stream?message=${encodeURIComponent(input)}`);
+      // Convert all messages to the format expected by the API
+      const messageHistory = messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+      messageHistory.push({ role: 'user', content: input });
+
+      // Use POST instead of GET for better handling of conversation history
+      const response = await fetch(`${apiUrl}/api/chat/stream`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ messages: messageHistory })
+      });
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
       let assistantMessage = '';
 
-      eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.content) {
-          assistantMessage += data.content;
-          setMessages(prev => {
-            const newMessages = [...prev];
-            const lastMessage = newMessages[newMessages.length - 1];
-            if (lastMessage.role === 'assistant') {
-              lastMessage.content = assistantMessage;
-            } else {
-              newMessages.push({
-                id: crypto.randomUUID(),
-                role: 'assistant',
-                content: assistantMessage
-              });
+      while (reader) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+        
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (data.content) {
+                assistantMessage += data.content;
+                setMessages(prev => {
+                  const newMessages = [...prev];
+                  const lastMessage = newMessages[newMessages.length - 1];
+                  if (lastMessage.role === 'assistant') {
+                    lastMessage.content = assistantMessage;
+                  } else {
+                    newMessages.push({
+                      id: crypto.randomUUID(),
+                      role: 'assistant',
+                      content: assistantMessage
+                    });
+                  }
+                  return newMessages;
+                });
+              }
+            } catch (e) {
+              console.error('Error parsing SSE data:', e);
             }
-            return newMessages;
-          });
+          }
         }
-      };
-
-      eventSource.onerror = (error) => {
-        console.error('SSE Error:', error);
-        eventSource.close();
-        setIsLoading(false);
-      };
-
-      eventSource.addEventListener('done', () => {
-        eventSource.close();
-        setIsLoading(false);
-      });
+      }
     } catch (error) {
       console.error('Chat error:', error);
+    } finally {
       setIsLoading(false);
     }
   };

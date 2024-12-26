@@ -10,6 +10,7 @@ services:
           type: web
           name: phoree-chatbot-api
           property: url
+
   - type: web
     name: phoree-chatbot-api
     runtime: python
@@ -20,5 +21,3 @@ services:
         sync: false
       - key: PORT
         value: 8000
-      - key: NODE_ENV
-        value: production
