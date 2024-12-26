@@ -45,14 +45,17 @@ def validate_env():
 def generate_groq(messages):
 
     try:
+        logger.info("Initializing Groq client...")
         client = Groq(
                         api_key=os.environ.get("GROQ_API_KEY"),
                     ) 
-        logger.info("Making request to Groq API...")
+        logger.info("Starting Groq API request...")
         
         full_messages = [
             {"role": "system", "content": SYSTEM_PROMPT}
         ] + messages
+
+        logger.info("Full messages being sent: {full_messages}")
 
         logger.info(f"Sending messages: {json.dumps(messages)}")  # Log the messages being sent
 
@@ -108,6 +111,8 @@ class handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
+            logger.info("Received POST request")
+            logger.info(f"Headers: {self.headers}")
             logger.info(f"Received request to path: {self.path}")
             if not self.path.startswith('/api/chat/stream'):
                 logger.error(f"Invalid path: {self.path}")
@@ -119,6 +124,7 @@ class handler(BaseHTTPRequestHandler):
             logger.info(f"Raw POST data: {post_data.decode('utf-8')}")
             data = json.loads(post_data.decode('utf-8'))
             messages = data.get("messages", [])
+            logger.info(f"Parsed messages: {messages}")
             print(messages, 'message from user')
 
             logger.info(f"Received POST request with messages: {json.dumps(messages)}")
@@ -142,22 +148,23 @@ class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            logger.info(f"GET request received at path: {self.path}")  # Add path logging
+            logger.info("=== GET Request Details ===")
+            logger.info(f"Path: {self.path}")
+            logger.info(f"Headers: {dict(self.headers)}")
             
             if self.path.startswith('/api/chat/stream'):
-                logger.info("Path matches /api/chat/stream")
-                
-                # Log the full path and query parameters
-                logger.info(f"Full request path: {self.path}")
+                # Extract and log query parameters
+                query_params = {}
                 if '?' in self.path:
-                    query_params = parse_qs(self.path.split('?')[1])
-                    logger.info(f"Query parameters: {query_params}")
+                    query_string = self.path.split('?')[1]
+                    logger.info(f"Query string: {query_string}")
+                    query_params = parse_qs(query_string)
+                    logger.info(f"Parsed query parameters: {query_params}")
                     message = query_params.get('message', [''])[0]
-                    logger.info(f"Extracted message: {message}")
                 else:
-                    logger.info("No query parameters found in URL")
                     message = ''
-
+                logger.info(f"Extracted message: '{message}'")
+                
                 if not message:
                     logger.error("No message provided in request")
                     self.send_error(400, "No message provided")
