@@ -104,12 +104,15 @@ class handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
+            logger.info(f"Received request to path: {self.path}")  # Add path logging
             if not self.path.startswith('/api/chat/stream'):
+                logger.error(f"Invalid path: {self.path}")  # Add error logging
                 self.send_error(404, "Not Found")
                 return
             
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
+            logger.info(f"Raw POST data: {post_data.decode('utf-8')}")  # Add raw data logging
             data = json.loads(post_data.decode('utf-8'))
             messages = data.get("messages", [])
 
@@ -139,13 +142,24 @@ class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            if self.path.startswith('/api/chat/stream'):  # <-- This needs to change to match the actual path
-
-                query_params = parse_qs(self.path.split('?')[1])
-                message = query_params.get('message', [''])[0]
-                print(message)
+            logger.info(f"GET request received at path: {self.path}")  # Add path logging
+            
+            if self.path.startswith('/api/chat/stream'):
+                logger.info("Path matches /api/chat/stream")
+                
+                # Log the full path and query parameters
+                logger.info(f"Full request path: {self.path}")
+                if '?' in self.path:
+                    query_params = parse_qs(self.path.split('?')[1])
+                    logger.info(f"Query parameters: {query_params}")
+                    message = query_params.get('message', [''])[0]
+                    logger.info(f"Extracted message: {message}")
+                else:
+                    logger.info("No query parameters found in URL")
+                    message = ''
 
                 if not message:
+                    logger.error("No message provided in request")
                     self.send_error(400, "No message provided")
                     return
 
