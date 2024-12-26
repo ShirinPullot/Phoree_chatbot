@@ -104,19 +104,19 @@ class handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
-            logger.info(f"Received request to path: {self.path}")  # Add path logging
+            logger.info(f"Received request to path: {self.path}")
             if not self.path.startswith('/api/chat/stream'):
-                logger.error(f"Invalid path: {self.path}")  # Add error logging
+                logger.error(f"Invalid path: {self.path}")
                 self.send_error(404, "Not Found")
                 return
             
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
-            logger.info(f"Raw POST data: {post_data.decode('utf-8')}")  # Add raw data logging
+            logger.info(f"Raw POST data: {post_data.decode('utf-8')}")
             data = json.loads(post_data.decode('utf-8'))
             messages = data.get("messages", [])
 
-            logger.info(f"Received POST request with messages: {json.dumps(messages)}")  # Log received messages
+            logger.info(f"Received POST request with messages: {json.dumps(messages)}")
 
             if not messages:
                 self.send_error(400, "No messages provided")
@@ -129,16 +129,11 @@ class handler(BaseHTTPRequestHandler):
 
             for chunk in generate_groq(messages):
                 self.wfile.write(chunk.encode('utf-8'))
-                self.wfile.flush()  # Ensure chunks are sent immediately
+                self.wfile.flush()
 
         except Exception as e:
             logger.error(f"Error in POST handler: {str(e)}")
             self.send_error(500, f"Internal Server Error: {str(e)}")
-            self.wfile.write(chunk.encode('utf-8'))
-
-        except Exception as e:
-            logger.error(f"Error in POST handler: {str(e)}")
-            self.send_error(500, "Internal Server Error")
 
     def do_GET(self):
         try:
