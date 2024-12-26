@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({ children, ...props }) => (
   <button 
@@ -52,8 +53,15 @@ export const Avatar: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ childre
   </div>
 )
 
-export const AvatarImage: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (props) => (
-  <img {...props} className={`rounded-full ${props.className || ''}`} />
+export const AvatarImage: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({ src, ...props }) => (
+  <Image 
+    src={src || '/default-avatar.png'}
+    {...props} 
+    width={Number(props.width) || 40}
+    height={Number(props.height) || 40}
+    alt={props.alt || "Avatar"}
+    className={`rounded-full ${props.className || ''}`} 
+  />
 )
 
 export const AvatarFallback: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, ...props }) => (

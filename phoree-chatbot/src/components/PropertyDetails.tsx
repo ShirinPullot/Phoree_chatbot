@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
@@ -35,14 +36,18 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
         <CardTitle>Property Details</CardTitle>
       </CardHeader>
       <CardContent>
-        <img 
-          src={property.image} 
-          alt={property.title} 
-          className="w-full h-48 object-cover rounded-md mb-4"
-          onError={(e) => {
-            e.currentTarget.src = "https://via.placeholder.com/400x300?text=Property+Image"
-          }}
-        />
+        <div className="relative w-full h-48 mb-4">
+          <Image 
+            src={property.image} 
+            alt={property.title} 
+            layout="fill"
+            objectFit="cover"
+            className="rounded-md"
+            onError={(e) => {
+              e.currentTarget.src = "https://via.placeholder.com/400x300?text=Property+Image"
+            }}
+          />
+        </div>
         <h3 className="text-xl font-semibold mb-2">{property.title}</h3>
         <p className="text-lg font-bold text-green-600 mb-2">{property.price}</p>
         <div className="flex space-x-2 mb-2">
@@ -60,3 +65,4 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
     </Card>
   )
 }
+
