@@ -13,7 +13,9 @@ type Message = {
   content: string;
 }
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+const apiUrl = process.env.NODE_ENV === 'production' 
+  ? 'https://phoree-chatbot.onrender.com'  // Replace with your Render URL
+  : 'http://localhost:3000';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([{
