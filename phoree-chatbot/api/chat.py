@@ -4,6 +4,8 @@ import json
 import os
 from groq import Groq
 import logging
+import sys
+from os import environ
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -75,12 +77,13 @@ class handler(BaseHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         # Add CORS headers for Render deployment
         self.headers_to_send = {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive'
-        }
+        'Access-Control-Allow-Origin': 'https://phoree-chatbot-frontend.onrender.com',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+    }
+
         super().__init__(*args, **kwargs)
 
     def send_cors_headers(self):
@@ -141,8 +144,12 @@ class handler(BaseHTTPRequestHandler):
         self.send_cors_headers()
         self.end_headers() 
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
+def run_server():
+    port = int(environ.get('PORT', 8000))
     server = HTTPServer(('0.0.0.0', port), handler)
-    print(f"Starting server on port {port}")
-    server.serve_forever() 
+    logger.info(f'Starting server on port {port}')
+    server.serve_forever()
+
+if __name__ == '__main__':
+    run_server() 
+

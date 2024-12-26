@@ -5,11 +5,11 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: NEXT_PUBLIC_API_URL
-        value: https://phoree-chatbot-api.onrender.com
-
+        fromService:
+          type: web
+          name: phoree-chatbot-api
+          property: url
   - type: web
     name: phoree-chatbot-api
     runtime: python
@@ -19,4 +19,6 @@ services:
       - key: GROQ_API_KEY
         sync: false
       - key: PORT
-        value: "10000" 
+        value: 8000
+      - key: NODE_ENV
+        value: production
