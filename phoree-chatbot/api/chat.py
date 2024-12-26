@@ -1,4 +1,4 @@
-from http.server import BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 import json
 import os
@@ -140,3 +140,9 @@ class handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_cors_headers()
         self.end_headers() 
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(('0.0.0.0', port), handler)
+    print(f"Starting server on port {port}")
+    server.serve_forever() 
