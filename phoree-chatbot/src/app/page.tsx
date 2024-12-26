@@ -13,13 +13,15 @@ type Message = {
   content: string;
 }
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+const apiUrl = process.env.NODE_ENV === 'production' 
+  ? 'https://your-render-service-name.onrender.com'
+  : 'http://localhost:10000';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([{
     id: crypto.randomUUID(),
     role: 'assistant',
-    content: "👋 Welcome to Phoree Real Estate! I&apos;m your personal property assistant for Dubai. How can I help you today?\n\n• Looking to buy a property?\n• Interested in renting?\n• Want to explore specific areas?\n• Need market insights?"
+    content: "👋 Welcome to Phoree Real Estate! Im your personal property assistant for Dubai. How can I help you today?\n\n• Looking to buy a property?\n• Interested in renting?\n• Want to explore specific areas?\n• Need market insights?"
   }]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);

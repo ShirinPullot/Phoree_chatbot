@@ -72,6 +72,21 @@ def generate_groq(messages):
         yield "event: done\ndata: {}\n\n"
 
 class handler(BaseHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        # Add CORS headers for Render deployment
+        self.headers_to_send = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive'
+        }
+        super().__init__(*args, **kwargs)
+
+    def send_cors_headers(self):
+        for header, value in self.headers_to_send.items():
+            self.send_header(header, value)
+
     def do_POST(self):
         try:
             content_length = int(self.headers['Content-Length'])
@@ -85,9 +100,7 @@ class handler(BaseHTTPRequestHandler):
 
             self.send_response(200)
             self.send_header('Content-Type', 'text/event-stream')
-            self.send_header('Cache-Control', 'no-cache')
-            self.send_header('Connection', 'keep-alive')
-            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_cors_headers()
             self.end_headers()
 
             for chunk in generate_groq(messages):
@@ -111,9 +124,7 @@ class handler(BaseHTTPRequestHandler):
 
                 self.send_response(200)
                 self.send_header('Content-Type', 'text/event-stream')
-                self.send_header('Cache-Control', 'no-cache')
-                self.send_header('Connection', 'keep-alive')
-                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_cors_headers()
                 self.end_headers()
 
                 for chunk in generate_groq(messages):
@@ -127,7 +138,5 @@ class handler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.send_cors_headers()
         self.end_headers() 
