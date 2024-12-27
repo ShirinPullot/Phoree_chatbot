@@ -3,13 +3,16 @@ from urllib.parse import parse_qs
 import json
 import os
 from groq import Groq
+from dotenv import load_dotenv
 import logging
 import sys
 from os import environ
+load_dotenv()
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+api_key = os.getenv('GROQ_API_KEY')
 
 SYSTEM_PROMPT = """You are a knowledgeable real estate assistant for Phoree Real Estate in Dubai.
 
@@ -46,8 +49,7 @@ def generate_groq(messages):
 
     try:
         logger.info("Initializing Groq client...")
-        client = Groq(
-                        api_key=os.environ.get("GROQ_API_KEY"),
+        client = Groq(api_key=api_key
                     ) 
         logger.info("Starting Groq API request...")
         
